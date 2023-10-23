@@ -19,13 +19,6 @@ public class ItemsWebApplication implements MyWebApplication {
 
     public ItemsWebApplication() {
         this.name = "Items Web Application";
-//        this.items = List.of(
-//                new Item(1L, "Box"),
-//                new Item(2L, "Phone"),
-//                new Item(3L, "Table"),
-//                new Item(4L, "Monitor"),
-//                new Item(5L, "Chair")
-//        );
 
         this.items = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(DATABASE_URL, dbUser, dbPassword)) {
