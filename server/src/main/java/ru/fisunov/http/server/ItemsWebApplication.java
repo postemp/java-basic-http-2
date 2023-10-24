@@ -1,5 +1,7 @@
 package ru.fisunov.http.server;
  
+import com.google.gson.Gson;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -39,21 +41,15 @@ public class ItemsWebApplication implements MyWebApplication {
 
     @Override
     public void execute(Request request, OutputStream output) throws IOException {
-        StringBuilder builder = new StringBuilder("[ ");
-        for (int i = 0; i < items.size(); i++) {
-            builder.append("{ \"id\": ").append(items.get(i).getId()).append(", \"title\": \"").append(items.get(i).getTitle()).append("\" }");
-            if (i < items.size() - 1) {
-                builder.append(", ");
-            }
-        }
-        builder.append(" ]");
+        Gson gson = new Gson();
+        String jsonItems = gson.toJson(items);
 
         output.write(("" +
                 "HTTP/1.1 200 OK\r\n" +
                 "Content-Type: application/json\r\n" +
                 "Access-Control-Allow-Origin: *\r\n" +
                 "\r\n" +
-                builder
+                jsonItems
         ).getBytes(StandardCharsets.UTF_8));
     }
 }
