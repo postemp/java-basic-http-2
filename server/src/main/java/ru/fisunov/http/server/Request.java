@@ -30,7 +30,7 @@ public class Request {
     public Request(InputStream inputStream) throws IOException {
         byte[] buffer = new byte[2048];
         int n = inputStream.read(buffer);
-        if (n == -1) {
+        if (n < 0) {
             this.badRequest = true;
             return;
         }
