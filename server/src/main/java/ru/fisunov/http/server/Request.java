@@ -7,18 +7,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Request {
-    private InputStream inputStream;
+//    private InputStream inputStream;
     private String uri;
     private String raw;
+    private String requestType;
     private Map<String, String> params;
+
+    private boolean badRequest = false;
 
     public String getUri() {
         return uri;
     }
 
+    public String getRequestType() {
+        return requestType;
+    }
+
+    public boolean isBadRequest() {
+        return badRequest;
+    }
+
     public Request(InputStream inputStream) throws IOException {
         byte[] buffer = new byte[2048];
         int n = inputStream.read(buffer);
+        if (n == -1) {
+            this.badRequest = true;
+            return;
+        }
         this.raw = new String(buffer, 0, n);
         this.uri = parseUri(raw);
         this.params = parseGetRequestParams(raw);
@@ -28,6 +43,7 @@ public class Request {
         int startIndex = request.indexOf(' ');
         int endIndex = request.indexOf(' ', startIndex + 1);
         String uri = request.substring(startIndex + 1, endIndex);
+        this.requestType = request.substring(0, startIndex);
         if (!uri.contains("?")) {
             return uri;
         }
@@ -59,5 +75,11 @@ public class Request {
 
     public String getParam(String key) {
         return params.get(key);
+    }
+
+    public String gettingPostRequestParams(){
+        int startIndex = raw.indexOf("\r\n\r\n");
+        System.out.printf("startIndex="+startIndex);
+        return raw.substring(startIndex + 4);
     }
 }

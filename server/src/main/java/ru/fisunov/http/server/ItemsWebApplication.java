@@ -32,18 +32,23 @@ public class ItemsWebApplication implements MyWebApplication {
                         items.add(new Item(id,title));
                     }
                 } catch (SQLException e) {
+                    e.printStackTrace();
                 }
             } catch (SQLException e) {
+                e.printStackTrace();
             }
         } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     public void execute(Request request, OutputStream output) throws IOException {
         Gson gson = new Gson();
+        if (request.getRequestType().equals("POST")) {
+            items.add(gson.fromJson(request.gettingPostRequestParams(),Item.class));
+        }
         String jsonItems = gson.toJson(items);
-
         output.write(("" +
                 "HTTP/1.1 200 OK\r\n" +
                 "Content-Type: application/json\r\n" +
